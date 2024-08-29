@@ -1,5 +1,6 @@
 Quick compare :loop: two files on bytes level.
 
+Example run:
 ```
 ##########################
 QuickFilesComparerHex ver 1.0
