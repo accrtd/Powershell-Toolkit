@@ -40,15 +40,16 @@ param (
     $PrintFiles = $true
 )
 
+# ***** VERSION *****
 $QFCVer = "1.1"
+# *******************
 
-function PrintArray($byteArray){
+function Print-Array($byteArray){
     $lineCounter = 0
     $lineIndex = 1
     Write-Host "`t[$($lineIndex)] " -NoNewline
     foreach($elem in $byteArray) {
         Write-Host ("$([System.BitConverter]::ToString($elem)) ") -NoNewline
-
         #Break line
         $lineCounter++
         if($lineCounter -eq $ByteLineLength){
@@ -59,9 +60,7 @@ function PrintArray($byteArray){
     }
 }
 
-function FindDiff($arrayA, $arrayB){
-    $lineCounter = 0
-    $lineIndex = 1
+function Find-Diff($arrayA, $arrayB){
     $indexOfArrayB = 0
     Write-Host "`t"  -NoNewline
     for($indexOfArrayA=0; $indexOfArrayA -le $arrayA.Count - 1; $indexOfArrayA++){
@@ -85,31 +84,28 @@ Write-Host "[INFO] Processing ...."
 $fileABytes = [System.IO.File]::ReadAllBytes($FileA)
 $fileBBytes = [System.IO.File]::ReadAllBytes($FileB)
 
-$bigerFileName = ""
 if($fileABytes.Count -ne $fileBBytes.Count){
     $bigerFileName = if($fileABytes.Count -gt $fileBBytes.Count) { $FileA } else { $FileB }
     Write-Host "[WARNING] Files have different size!" -ForegroundColor white -BackgroundColor red
     Write-Host "[INFO] $($fileABytes.Count) bytes vs $($fileBBytes.Count) bytes"
     Write-Host "[INFO] Biger file: $($bigerFileName)"
-}
-
-if($bigerFileName -ne ""){
     Write-Host "[INFO] Difference (aganist $($bigerFileName)):"
-} else {
+} else{
     Write-Host "[INFO] Difference:"
 }
+
 if($fileABytes.Count -gt $fileBBytes.Count){ 
-    FindDiff -arrayA $fileABytes -arrayB $fileBBytes
+    Find-Diff -arrayA $fileABytes -arrayB $fileBBytes
 } else{ 
-    FindDiff -arrayA $fileBBytes -arrayB $fileABytes
+    Find-Diff -arrayA $fileBBytes -arrayB $fileABytes
 }
 
 if($PrintFiles){
     Write-Host "`n`nFile A:"
-    PrintArray($fileABytes)
+    Print-Array($fileABytes)
 
     Write-Host "`n`nFile B:"
-    PrintArray($fileBBytes)
+    Print-Array($fileBBytes)
 }
 
 Write-Host "`n`n[INFO] Done :)"
